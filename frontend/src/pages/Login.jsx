@@ -84,12 +84,7 @@ const Login = () => {
 
             {message && <p className="mt-4 text-lg font-semibold">{message}</p>}
 
-            <p className="mt-4 text-gray-600">
-              Need a Khan Academy account?{" "}
-              <a href="/signup" className="text-blue-600 hover:underline">
-                Create an account
-              </a>
-            </p>
+            
           </form>
         </div>
       </div>
