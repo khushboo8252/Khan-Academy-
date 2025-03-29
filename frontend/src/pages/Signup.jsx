@@ -1,27 +1,21 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 
 const Signup = () => {
-  // State for form fields
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState(""); // For success/error messages
-  const [loading, setLoading] = useState(false); // Loading state
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); // 👈 For redirection
 
-  // API Base URL
   const API_BASE_URL = "https://backend-khanacademy.onrender.com/api/auth";
 
-  // Check if all fields are filled
-  const isFormValid = name.trim() !== "" && email.trim() !== "" && password.trim() !== "";
-
-  // Handle form submission
   const handleSignup = async (e) => {
     e.preventDefault();
-    setMessage(""); // Clear previous messages
+    setMessage("");
     setLoading(true);
-
-    if (!isFormValid) return;
 
     try {
       const response = await fetch(`${API_BASE_URL}/signup`, {
@@ -36,11 +30,11 @@ const Signup = () => {
       setLoading(false);
 
       if (response.ok) {
-        setMessage(`✅ Signup Successful! Welcome, ${data.user.name || "User"} 🎉`);
+        setMessage(`✅ Signup Successful! Redirecting to login...`);
         setName("");
         setEmail("");
         setPassword("");
-        // Store token if needed (e.g., localStorage.setItem("token", data.token))
+        setTimeout(() => navigate("/login"), 2000); // 👈 Redirect to login page after 2 seconds
       } else {
         setMessage(`❌ Error: ${data.error || "Something went wrong"}`);
       }
@@ -53,7 +47,6 @@ const Signup = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <div className="flex flex-1">
-        {/* Left Section - Image & Text */}
         <div className="hidden md:flex md:w-1/2 bg-green-900 text-white items-center justify-center p-10">
           <div className="text-center">
             <img
@@ -66,7 +59,6 @@ const Signup = () => {
           </div>
         </div>
 
-        {/* Right Section - Signup Form */}
         <div className="w-full md:w-1/2 flex items-center justify-center p-8">
           <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
             <h2 className="text-2xl font-bold text-center mb-4">Sign Up</h2>
@@ -112,28 +104,19 @@ const Signup = () => {
               <button
                 type="submit"
                 className={`w-full py-2 rounded-lg ${
-                  isFormValid ? "bg-blue-600 hover:bg-blue-700 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700 text-white"
                 }`}
-                disabled={!isFormValid || loading}
+                disabled={loading}
               >
                 {loading ? "Signing Up..." : "Sign Up"}
               </button>
 
-              {/* Response Message */}
               {message && <p className="mt-4 text-lg font-semibold text-center">{message}</p>}
             </form>
-
-            <p className="text-center text-gray-600 mt-4">
-              Already have an account?{" "}
-              <a href="/login" className="text-blue-600 hover:underline">
-                Log in
-              </a>
-            </p>
           </div>
         </div>
       </div>
 
-      {/* Footer Section */}
       <Footer />
     </div>
   );
